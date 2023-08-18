@@ -19,17 +19,18 @@ main() {
     }
 
     test('is a Redux Middleware', () {
-      expect(futureMiddleware, new isInstanceOf<Middleware>());
+      expect(futureMiddleware, isA<Middleware>());
     });
 
     group('FutureAction', () {
       test('can synchronously dispatch an initial action', () {
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [futureMiddleware],
+          initialState: '',
         );
-        final action = new FutureAction(
-          new Future<String>.value("Fetch Complete"),
+        final action = FutureAction(
+          Future<String>.value("Fetch Complete"),
           initialAction: "Fetching",
         );
 
@@ -41,13 +42,14 @@ main() {
       test(
           'dispatches a FutureFulfilledAction if the future completes successfully',
           () async {
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [futureMiddleware],
+          initialState: '',
         );
         final dispatchedAction = "Friend";
-        final future = new Future.value(dispatchedAction);
-        final action = new FutureAction(
+        final future = Future.value(dispatchedAction);
+        final action = FutureAction(
           future,
           initialAction: "Hi",
         );
@@ -61,13 +63,14 @@ main() {
 
       test('dispatches a FutureRejectedAction if the future returns an error',
           () {
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [futureMiddleware],
+          initialState: '',
         );
-        final exception = new Exception("Error Message");
-        final future = new Future.error(exception);
-        final action = new FutureAction(
+        final exception = Exception("Error Message");
+        final future = Future.error(exception);
+        final action = FutureAction(
           future,
           initialAction: "Hi",
         );
@@ -82,13 +85,14 @@ main() {
 
       test('returns the result of the Future after it has been dispatched',
           () async {
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [futureMiddleware],
+          initialState: '',
         );
         final dispatchedAction = "Friend";
-        final future = new Future.value(dispatchedAction);
-        final action = new FutureAction(
+        final future = Future.value(dispatchedAction);
+        final action = FutureAction(
           future,
           initialAction: "Hi",
         );
@@ -97,19 +101,20 @@ main() {
 
         expect(
           await action.result,
-          new FutureFulfilledAction(dispatchedAction),
+          FutureFulfilledAction(dispatchedAction),
         );
       });
 
       test('returns the error of the Future after it has been dispatched',
           () async {
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [futureMiddleware],
+          initialState: '',
         );
-        final exception = new Exception("Khaaaaaaaaaan");
-        final future = new Future.error(exception);
-        final action = new FutureAction(
+        final exception = Exception("Khaaaaaaaaaan");
+        final future = Future.error(exception);
+        final action = FutureAction(
           future,
           initialAction: "Hi",
         );
@@ -118,7 +123,7 @@ main() {
 
         expect(
           await action.result,
-          new FutureRejectedAction(exception),
+          FutureRejectedAction(exception),
         );
       });
 
@@ -129,12 +134,13 @@ main() {
           next(action);
         }
 
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [loggingMiddleware, futureMiddleware],
+          initialState: '',
         );
-        final action = new FutureAction(
-          new Future.value("Friend"),
+        final action = FutureAction(
+          Future.value("Friend"),
           initialAction: "Hi",
         );
 
@@ -154,12 +160,13 @@ main() {
       test(
           'dispatches a FutureFulfilledAction if the future completes successfully',
           () async {
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [futureMiddleware],
+          initialState: '',
         );
         final dispatchedAction = "Friend";
-        final future = new Future.value(dispatchedAction);
+        final future = Future.value(dispatchedAction);
 
         store.dispatch(future);
 
@@ -170,12 +177,13 @@ main() {
 
       test('dispatches a FutureRejectedAction if the future returns an error',
           () {
-        final store = new Store<String>(
+        final store = Store<String>(
           futureReducer,
           middleware: [futureMiddleware],
+          initialState: '',
         );
-        final exception = new Exception("Error Message");
-        final future = new Future.error(exception);
+        final exception = Exception("Error Message");
+        final future = Future.error(exception);
 
         store.dispatch(future);
 

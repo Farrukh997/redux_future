@@ -76,11 +76,11 @@ Future<FutureResultAction> _dispatchResults<State>(
   Future<dynamic> future,
 ) {
   return future.then((result) {
-    final fulfilledAction = new FutureFulfilledAction(result);
+    final FutureResultAction fulfilledAction = FutureFulfilledAction(result);
     store.dispatch(fulfilledAction);
     return fulfilledAction;
   }).catchError((error) {
-    final errorAction = new FutureRejectedAction(error);
+    final FutureResultAction errorAction = FutureRejectedAction(error);
     store.dispatch(errorAction);
     return errorAction;
   });
@@ -133,7 +133,7 @@ class FutureAction<T> {
   /// Internal use only. To know when the Future has completed and the
   /// middleware has dispatched the Success or Error to the Store, use the
   /// [result] getter.
-  final completer = new Completer<FutureResultAction>();
+  final completer = Completer<FutureResultAction>();
 
   /// Returns a [FutureFulfilledAction] or [FutureRejectedAction] action from
   /// the [futureMiddleware] after the middleware has dispatched the action
@@ -156,7 +156,7 @@ abstract class FutureResultAction {}
 
 /// This action will be dispatched if the [Future] provided to a [FutureAction]
 /// completes successfully.
-class FutureFulfilledAction<T> implements FutureResultAction {
+class FutureFulfilledAction<T> extends FutureResultAction {
   final T result;
 
   FutureFulfilledAction(this.result);
@@ -179,7 +179,7 @@ class FutureFulfilledAction<T> implements FutureResultAction {
 
 /// This action will be dispatched if the [Future] provided to a [FutureAction]
 /// finishes with an error.
-class FutureRejectedAction<E> implements FutureResultAction {
+class FutureRejectedAction<E> extends FutureResultAction {
   final E error;
 
   FutureRejectedAction(this.error);
